@@ -7,6 +7,10 @@ module JRuby::Startup::AppCDS
       puts "*** Warning: this feature is only supported on Java 11 or higher"
     end
 
+    if JRUBY_VERSION < '9.2.1.0'
+      puts "*** JRuby 9.2.1 or higher recommended"
+    end
+
     # Go for it
     command_line = argv[0] || "-e 1"
     jruby_home = ENV_JAVA['jruby.home']
@@ -27,7 +31,7 @@ module JRuby::Startup::AppCDS
     # Use class list to generate AppCDS archive
     puts "*** Generating shared AppCDS archive at #{jruby_jsa}"
 
-    fail unless system "VERIFY_JRUBY=1 JAVA_OPTS='-Xshare:dump -XX:+UnlockDiagnosticVMOptions -XX:SharedClassListFile=#{jruby_list} -XX:SharedArchiveFile=#{jruby_jsa}' #{jruby_exe} #{command_line}"
+    fail unless system "VERIFY_JRUBY=1 JAVA_OPTS='-Xshare:dump -XX:G1HeapRegionSize=2m -XX:+UnlockDiagnosticVMOptions -XX:SharedClassListFile=#{jruby_list} -XX:SharedArchiveFile=#{jruby_jsa}' #{jruby_exe} #{command_line}"
 
     # Display env vars to use for the new archive
     puts <<~END
@@ -35,8 +39,8 @@ module JRuby::Startup::AppCDS
 
     Set the following environment variables to use the shared archive:
 
-    VERIFY_JRUBY=1
-    JAVA_OPTS="-XX:-VerifySharedSpaces -XX:SharedArchiveFile=#{jruby_jsa}"
+    VERIFY_JRUBY=1 # Only for JRuby versions 9.2.0.0 or earlier
+    JAVA_OPTS="-XX:G1HeapRegionSize=2m -XX:SharedArchiveFile=#{jruby_jsa}"
     END
   end
 end
