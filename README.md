@@ -1,35 +1,39 @@
-# Jruby::Startup
+# JRuby::Startup
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/jruby/startup`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+This is a collection of utilities to help improve the startup time of
+JRuby-based applications.
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'jruby-startup'
-```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install jruby-startup
+`gem install jruby-startup`
 
 ## Usage
 
-TODO: Write usage instructions here
+The utilities provided by this gem are described below.
 
-## Development
+### generate-appcds
 
-After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+The `generate-appcds` command is used to generate an AppCDS, or
+"Application-specific Class Data Store" archive on OpenJDK 11 or
+higher. This archive pre-processes the classes in JRuby to eliminate
+some overhead at startup.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+By using this utility and setting some environment variables, many
+JRuby commands can be sped up a fair amount.
+
+Running `generate-appcds` alone will generate the AppCDS archive based
+on a command line of `-e 1` as passed to JRuby. You can provide a
+different command line, in quotes, to the `generate-appcds` command.
+
+```
+$ generate-appcds
+*** Outputting list of classes at /Users/headius/projects/jruby/lib/jruby.list
+...
+```
+
+When the command has completed, you will see some environment variables
+to set that will enable the use of the AppCDS archive.
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/headius/jruby-startup.
+Bug reports and pull requests are welcome on GitHub at https://github.com/jruby/jruby-startup.
