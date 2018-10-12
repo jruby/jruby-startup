@@ -20,7 +20,7 @@ module JRuby::Startup::AppCDS
     ENV['VERIFY_JRUBY'] = '1'
 
     # Dump list of classes for this command line
-    puts "*** Outputting list of classes at #{jruby_jsa}"
+    puts "*** Outputting list of classes at #{jruby_list}"
 
     fail unless system "VERIFY_JRUBY=1 JAVA_OPTS='-XX:DumpLoadedClassList=#{jruby_list}' #{jruby_exe} #{command_line}"
 
@@ -36,7 +36,7 @@ module JRuby::Startup::AppCDS
     Set the following environment variables to use the shared archive:
 
     VERIFY_JRUBY=1
-    JAVA_OPTS=-XX:SharedArchiveFile=#{jruby_jsa}
+    JAVA_OPTS="-XX:-VerifySharedSpaces -XX:SharedArchiveFile=#{jruby_jsa}"
     END
   end
 end
