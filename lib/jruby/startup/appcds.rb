@@ -24,23 +24,25 @@ module JRuby::Startup::AppCDS
     ENV['VERIFY_JRUBY'] = '1'
 
     # Dump list of classes for this command line
-    puts "*** Outputting list of classes at #{jruby_list}"
+    puts "*** Outputting list of classes at #{jruby_list}\n\n"
 
     fail unless system "VERIFY_JRUBY=1 JAVA_OPTS='-XX:DumpLoadedClassList=#{jruby_list}' #{jruby_exe} #{command_line}"
 
     # Use class list to generate AppCDS archive
-    puts "*** Generating shared AppCDS archive at #{jruby_jsa}"
+    puts "\n*** Generating shared AppCDS archive at #{jruby_jsa}\n\n"
 
     fail unless system "VERIFY_JRUBY=1 JAVA_OPTS='-Xshare:dump -XX:G1HeapRegionSize=2m -XX:+UnlockDiagnosticVMOptions -XX:SharedClassListFile=#{jruby_list} -XX:SharedArchiveFile=#{jruby_jsa}' #{jruby_exe} #{command_line}"
 
     # Display env vars to use for the new archive
     puts <<~END
+
     *** Success!
+    
+    JRuby versions 9.2.1 or higher should detect #{jruby_jsa} and use it automatically.
+    For versions of JRuby 9.2 or earlier, set the following environment variables:
 
-    Set the following environment variables to use the shared archive:
-
-    VERIFY_JRUBY=1 # Only for JRuby versions 9.2.0.0 or earlier
-    JAVA_OPTS="-XX:G1HeapRegionSize=2m -XX:SharedArchiveFile=#{jruby_jsa}"
+    VERIFY_JRUBY=1
+    JAVA_OPTS="-XX:G1HeapRegionSize=2m -XX:SharedArchiveFile=/Users/headius/projects/jruby/lib/jruby.jsa"
     END
   end
 end
