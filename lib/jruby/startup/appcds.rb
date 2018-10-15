@@ -42,7 +42,7 @@ module JRuby::Startup::AppCDS
     For versions of JRuby 9.2 or earlier, set the following environment variables:
 
     VERIFY_JRUBY=1
-    JAVA_OPTS="-XX:G1HeapRegionSize=2m -XX:SharedArchiveFile=/Users/headius/projects/jruby/lib/jruby.jsa"
+    JAVA_OPTS="-XX:G1HeapRegionSize=2m -XX:SharedArchiveFile=#{jruby_jsa}"
     END
   end
 end
